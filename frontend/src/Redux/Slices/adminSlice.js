@@ -9,7 +9,7 @@ export const fetchUsers = createAsyncThunk("admin/fetchUsers",
             `${import.meta.env.VITE_BACKEND_URL}/api/admin/users`,
             {
                 headers:{
-                    Authorization:`Bearer ${localStorage.getItem("userToken")}`
+                    Authorization:`Bearer ${localStorage.getItem("token")}`
                 },
             }
         );
@@ -27,7 +27,7 @@ export const addUser = createAsyncThunk(
                 userData,
                 {
                     headers:{
-                        Authorization:`Bearer ${localStorage.getItem("userToken")}`
+                        Authorization:`Bearer ${localStorage.getItem("token")}`
                     }
                 }
             );
@@ -47,7 +47,7 @@ export const updateUser = createAsyncThunk(
             {name,email,role},
             {
                 headers:{
-                    Authorization:`Bearer ${localStorage.getItem("userToken")}`
+                    Authorization:`Bearer ${localStorage.getItem("token")}`
                 }
             }
         );
@@ -62,7 +62,7 @@ export const deleteUser = createAsyncThunk(
             `${import.meta.env.VITE_BACKEND_URL}/api/admin/users/${id}`,
             {
                 headers:{
-                    Authorization:`Bearer ${localStorage.getItem("userToolkit")}`
+                    Authorization:`Bearer ${localStorage.getItem("token")}`
                 }
             }
         );

@@ -309,7 +309,7 @@ export const mergeCart = createAsyncThunk(
   "cart/mergeCart",
   async ({ guestId, user }, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("userToken");
+      const token = localStorage.getItem("token");
 
       if (!token) {
         console.error("No user token found!");

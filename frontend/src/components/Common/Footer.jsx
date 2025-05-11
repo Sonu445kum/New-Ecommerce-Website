@@ -28,19 +28,19 @@ const Footer = () => {
         <h3 className='text-lg text-gray-800 mb-4'>Shop</h3>
         <ul className='space-y-2 text-gray-600'>
             <li>
-                <Link top='#' className='hover:text-gray-500 transition-colors'>Men's Top Wear
+                <Link top='/collections/all?category=Top Wear' className='hover:text-gray-500 transition-colors'>Men's Top Wear
                 </Link>
             </li>
             <li>
-                <Link top='#' className='hover:text-gray-500 transition-colors'>Women's Top Wear
+                <Link top='/collections/all?gender=women' className='hover:text-gray-500 transition-colors'>Women's Top Wear
                 </Link>
             </li>
             <li>
-                <Link top='#' className='hover:text-gray-500 transition-colors'>Mens's Bottom Wear
+                <Link top='/collections/all?gender=men' className='hover:text-gray-500 transition-colors'>Mens's Bottom Wear
                 </Link>
             </li>
             <li>
-                <Link top='#' className='hover:text-gray-500 transition-colors'>Women's Bottom Wear
+                <Link top='/collections/all?category=Bottom Wear' className='hover:text-gray-500 transition-colors'>Women's Bottom Wear
                 </Link>
             </li>
         </ul>

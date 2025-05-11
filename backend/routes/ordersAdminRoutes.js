@@ -6,9 +6,9 @@ const router = express.Router();
 //@route GET /api/admin/orders
 //@desc Get all orders
 //@access Private/admin
-router.get("/",protect,isAdmin,async(req,res)=>{
+router.get("/",protect,isAdmin,async(__,res)=>{
     try {
-        const orders = await Order.find({}).populate("user","name email");
+        const orders = await Order.find().populate("user","name email");
         res.json(orders);
     } catch (error) {
         console.error(error.message);

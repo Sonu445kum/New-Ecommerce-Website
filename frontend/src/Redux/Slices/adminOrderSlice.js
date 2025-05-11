@@ -2,25 +2,48 @@ import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Fetch all orders (admin only)
+// export const fetchAllOrders = createAsyncThunk(
+//     "adminOrders/fetchOrders",
+//     async (_,{rejectWithValue}) => {
+//         try {
+//             const response = await axios.get(
+//                 `${import.meta.env.VITE_BACKEND_URL}/api/admin/orders`,
+//                 {
+//                     headers: {
+//                         Authorization:`Bearer ${localStorage.getItem("token")}`,
+//                     },
+//                 }
+//             ); 
+//             return response.data;
+//         } catch (error) {
+//             console.log(error);
+//             return rejectWithValue(error.response.data);
+            
+//         }
+        
+//     }
+// );
+
+
+// Fetch all orders (admin only)
 export const fetchAllOrders = createAsyncThunk(
     "adminOrders/fetchOrders",
-    async (_,{rejectWithValue}) => {
+    async (_, { rejectWithValue }) => {
         try {
             const response = await axios.get(
                 `${import.meta.env.VITE_BACKEND_URL}/api/admin/orders`,
                 {
                     headers: {
-                        Authorization:`Bearer ${localStorage.getItem("userToken")}`,
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },
                 }
-            ); 
+            );
+            console.log("Orders API Response:", response.data); // Debugging log
             return response.data;
         } catch (error) {
             console.log(error);
             return rejectWithValue(error.response.data);
-            
         }
-        
     }
 );
 
@@ -34,7 +57,7 @@ export const updateOrderStatus = createAsyncThunk(
                 {status},
                 {
                     headers: {
-                        Authorization:`Bearer ${localStorage.getItem("userToken")}`,
+                        Authorization:`Bearer ${localStorage.getItem("token")}`,
                     },
                 }
             ); 
@@ -58,7 +81,7 @@ export const deleteOrder = createAsyncThunk(
                 {status},
                 {
                     headers: {
-                        Authorization:`Bearer ${localStorage.getItem("userToken")}`,
+                        Authorization:`Bearer ${localStorage.getItem("token")}`,
                     },
                 }
             ); 

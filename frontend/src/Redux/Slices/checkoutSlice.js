@@ -61,7 +61,7 @@ export const createCheckout = createAsyncThunk(
     "checkout/createCheckout",
     async (checkoutData, { rejectWithValue }) => {
       try {
-        const token = localStorage.getItem("userToken");
+        const token = localStorage.getItem("token");
   
         if (!token) {
           console.error("No token found! Redirecting to login...");

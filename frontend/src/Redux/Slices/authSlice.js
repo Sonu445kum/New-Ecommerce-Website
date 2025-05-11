@@ -164,7 +164,7 @@ export const loginUser = createAsyncThunk(
         userData,
        { 
         headers:{
-          Authorization:`Bearer ${localStorage.getItem("userToken")}`
+          Authorization:`Bearer ${localStorage.getItem("token")}`
       }
     }
       );

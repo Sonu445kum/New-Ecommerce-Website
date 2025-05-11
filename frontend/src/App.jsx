@@ -42,10 +42,12 @@ const App = () => {
       <Route path="/" element={<UserLayout />} >
       <Route index element={<Home/>}/>
       <Route path='login' element={<Login/>}/>
+      {/* New Route */}
       <Route path='register' element={<Register/>}/>
       <Route path='profile' element={<Profile/>}/>
       <Route path='collections/:collection' element={<CollectionPage/>}/>
       <Route path='product/:id' element={<ProductDetails/>}/>
+      <Route path='login/checkout' element={<Checkout/>}/>
       <Route path='checkout' element={<Checkout/>}/>
       <Route path='payment' element ={<PayPalButton/>}/>
       <Route path='order-confirmation' element={<OrderConfirmationPage/>}/>

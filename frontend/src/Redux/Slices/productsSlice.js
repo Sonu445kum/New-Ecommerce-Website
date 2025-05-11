@@ -279,13 +279,32 @@ export const fetchProductsByFilters = createAsyncThunk(
 );
 
 // Fetch single product details
+// export const fetchProductDetails = createAsyncThunk(
+//   "products/fetchProductDetails",
+//   async (id) => {
+//     const response = await axios.get(
+//       `${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`
+//     );
+//     return response.data;
+//   }
+// );
+
 export const fetchProductDetails = createAsyncThunk(
   "products/fetchProductDetails",
-  async (id) => {
-    const response = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`
-    );
-    return response.data;
+  async (id, { rejectWithValue }) => {
+      if (!id) {
+          return rejectWithValue("Product ID is required");
+      }
+
+      try {
+          const response = await axios.get(
+              `${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`
+          );
+          return response.data;
+      } catch (error) {
+          console.error("Error fetching product details:", error);
+          return rejectWithValue(error.response?.data || "Something went wrong");
+      }
   }
 );
 
@@ -298,7 +317,7 @@ export const updateProduct = createAsyncThunk(
       productData,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
@@ -316,22 +335,41 @@ export const updateProduct = createAsyncThunk(
 //     return response.data;
 //   }
 // );
-export const fetchSimilarProducts = createAsyncThunk(
-    "products/fetchSimilar",
-    async ({ id }, { rejectWithValue }) => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/products/similar/${id}`
-        );
-        console.log("Similar Products API Response:", response.data);
-        return response.data.similarProducts; //  Extract only similarProducts array
-      } catch (error) {
-        console.error("Error fetching similar products:", error);
-        return rejectWithValue(error.response?.data || "Something went wrong");
-      }
-    }
-  );
+// export const fetchSimilarProducts = createAsyncThunk(
+//     "products/fetchSimilar",
+//     async ({ id }, { rejectWithValue }) => {
+//       try {
+//         const response = await axios.get(
+//           `${import.meta.env.VITE_BACKEND_URL}/api/products/similar/${id}`
+//         );
+//         console.log("Similar Products API Response:", response.data);
+//         return response.data.similarProducts; //  Extract only similarProducts array
+//       } catch (error) {
+//         console.error("Error fetching similar products:", error);
+//         return rejectWithValue(error.response?.data || "Something went wrong");
+//       }
+//     }
+//   );
   
+export const fetchSimilarProducts = createAsyncThunk(
+  "products/fetchSimilar",
+  async ({ id }, { rejectWithValue }) => {
+    console.log("Fetching similar products for ID:", id); // Debugging log
+    if (!id) {
+      return rejectWithValue("Product ID is required");
+    }
+
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/products/similar/${id}`
+      );
+      return response.data.similarProducts;
+    } catch (error) {
+      console.error("Error fetching similar products:", error);
+      return rejectWithValue(error.response?.data || "Something went wrong");
+    }
+  }
+);
   
 const productSlice = createSlice({
   name: "products",
