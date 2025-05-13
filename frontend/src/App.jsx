@@ -25,15 +25,12 @@ import OrderManagement from './components/Admin/OrderManagement'
 import { Provider } from 'react-redux'
 import store from './Redux/store'
 import ProtectedRoutes from './components/Common/ProtectedRoutes'
+import About from './pages/About'
+import Contact from './pages/Contact'
 const App = () => {
   return (
     <>
-    {
-    /* www.e-commerce.com/home 
-    www.e-commerce.com/about
-    www.e-commerce.com/contact
-     */
-    }
+    
     <Provider store={store}>
       <BrowserRouter>
 <Toaster position ="top-right"/>
@@ -49,11 +46,16 @@ const App = () => {
       <Route path='product/:id' element={<ProductDetails/>}/>
       <Route path='login/checkout' element={<Checkout/>}/>
       <Route path='checkout' element={<Checkout/>}/>
+      
       <Route path='payment' element ={<PayPalButton/>}/>
       <Route path='order-confirmation' element={<OrderConfirmationPage/>}/>
       <Route path='order/:id' element={<OrderDetailsPage/>}/>
       <Route path='my-orders' element={<MyOrdersPage/>}/>
+
+      <Route path='about' element={<About/>}/>
+      <Route path='contact' element={<Contact/>}/>
       </Route>
+      
 
       <Route path='/admin' element ={<ProtectedRoutes role="admin">
         <AdminLayout/>

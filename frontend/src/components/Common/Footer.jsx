@@ -51,11 +51,11 @@ const Footer = () => {
         <h3 className='text-lg text-gray-800 mb-4'>Supports</h3>
         <ul className='space-y-2 text-gray-600'>
             <li>
-                <Link top='#' className='hover:text-gray-500 transition-colors'>Contact
+                <Link top='/contact' className='hover:text-gray-500 transition-colors'>Contact
                 </Link>
             </li>
             <li>
-                <Link top='#' className='hover:text-gray-500 transition-colors'>About
+                <Link top='/about' className='hover:text-gray-500 transition-colors'>About
                 </Link>
             </li>
             <li>
