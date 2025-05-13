@@ -14,8 +14,11 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-  build:{
-    chunkSizeWarningLimit: 1600,
-
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
   },
 })
