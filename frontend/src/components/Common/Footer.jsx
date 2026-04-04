@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom'
 import {FiPhoneCall} from "react-icons/fi"
 const Footer = () => {
   return (
-   <footer className='border-t py-12'>
-    <div className='container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 px-4 lg:px-0'>
+   <footer className='border-t py-10'>
+    <div className='container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 px-6 lg:px-8'>
     <div>
         <h3 className='text-lg text-gray-800 mb-4'>NewsLetter</h3>
         <p className='text-gray-500 mb-4'>Be the first to hear about new products,exclusive events,and online offers</p>
@@ -28,19 +28,19 @@ const Footer = () => {
         <h3 className='text-lg text-gray-800 mb-4'>Shop</h3>
         <ul className='space-y-2 text-gray-600'>
             <li>
-                <Link top='/collections/all?category=Top Wear' className='hover:text-gray-500 transition-colors'>Men's Top Wear
+                <Link to ='/collections/all?category=Top Wear' className='hover:text-gray-500 transition-colors'>Men's Top Wear
                 </Link>
             </li>
             <li>
-                <Link top='/collections/all?gender=women' className='hover:text-gray-500 transition-colors'>Women's Top Wear
+                <Link to ='/collections/all?gender=women' className='hover:text-gray-500 transition-colors'>Women's Top Wear
                 </Link>
             </li>
             <li>
-                <Link top='/collections/all?gender=men' className='hover:text-gray-500 transition-colors'>Mens's Bottom Wear
+                <Link to ='/collections/all?gender=men' className='hover:text-gray-500 transition-colors'>Mens's Bottom Wear
                 </Link>
             </li>
             <li>
-                <Link top='/collections/all?category=Bottom Wear' className='hover:text-gray-500 transition-colors'>Women's Bottom Wear
+                <Link to ='/collections/all?category=Bottom Wear' className='hover:text-gray-500 transition-colors'>Women's Bottom Wear
                 </Link>
             </li>
         </ul>
@@ -51,19 +51,19 @@ const Footer = () => {
         <h3 className='text-lg text-gray-800 mb-4'>Supports</h3>
         <ul className='space-y-2 text-gray-600'>
             <li>
-                <Link top='/contact' className='hover:text-gray-500 transition-colors'>Contact
+                <Link to ='/contact' className='hover:text-gray-500 transition-colors'>Contact
                 </Link>
             </li>
             <li>
-                <Link top='/about' className='hover:text-gray-500 transition-colors'>About
+                <Link to ='/about' className='hover:text-gray-500 transition-colors'>About
                 </Link>
             </li>
             <li>
-                <Link top='#' className='hover:text-gray-500 transition-colors'>FAQS
+                <Link to ='/faq' className='hover:text-gray-500 transition-colors'>FAQS
                 </Link>
             </li>
             <li>
-                <Link top='#' className='hover:text-gray-500 transition-colors'>Features
+                <Link to ='/features' className='hover:text-gray-500 transition-colors'>Features
                 </Link>
             </li>
         </ul>

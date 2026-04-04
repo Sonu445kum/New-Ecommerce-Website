@@ -27,6 +27,8 @@ import store from './Redux/store'
 import ProtectedRoutes from './components/Common/ProtectedRoutes'
 import About from './pages/About'
 import Contact from './pages/Contact'
+import FAQ from './pages/FAQ'
+import Features from './pages/Features'
 const App = () => {
   return (
     <>
@@ -54,6 +56,9 @@ const App = () => {
 
       <Route path='about' element={<About/>}/>
       <Route path='contact' element={<Contact/>}/>
+
+      <Route path='faq' element={<FAQ />} />
+      <Route path='features' element={<Features />} />
       </Route>
       
 

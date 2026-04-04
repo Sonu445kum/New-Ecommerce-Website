@@ -1,102 +1,149 @@
 import React, { useState } from 'react';
+import { FiMail, FiPhone, FiMapPin } from "react-icons/fi";
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [formStatus, setFormStatus] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const validateEmail = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.name || !formData.email || !formData.message) {
-      setFormStatus('Please fill in all fields.');
+      setFormStatus('⚠️ Please fill in all fields.');
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      setFormStatus('⚠️ Please enter a valid email.');
       return;
     }
 
     try {
+      setLoading(true);
+      setFormStatus('');
+
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
       if (res.ok) {
-        setFormStatus('Message sent successfully!');
+        setFormStatus(' Message sent successfully!');
         setFormData({ name: '', email: '', message: '' });
+
+        setTimeout(() => setFormStatus(''), 3000);
       } else {
-        setFormStatus(data.message || 'Something went wrong.');
+        setFormStatus('❌ Something went wrong.');
       }
     } catch (err) {
-      setFormStatus('Server error. Try again later.');
+      setFormStatus('❌ Server error. Try again later.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 mt-10">
-      <h1 className="text-3xl font-bold text-center mb-6">Contact Us</h1>
-      <p className="text-center text-gray-600 mb-10">
-        We'd love to hear from you. Send us a message and we'll get back to you as soon as possible.
-      </p>
+    <div className="max-w-6xl mx-auto p-6 mt-10 grid md:grid-cols-2 gap-10">
 
-      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 py-6 space-y-6">
+      {/* LEFT SIDE - CONTACT INFO */}
+      <div className="space-y-6">
+        <h1 className="text-4xl font-bold">Contact Us</h1>
+        <p className="text-gray-600">
+          We’d love to hear from you. Reach out anytime — we’re here to help!
+        </p>
+
+        <div className="space-y-4">
+          <p className="flex items-center gap-3 text-gray-700">
+            <FiMapPin /> 123 Commerce Street, New York
+          </p>
+          <p className="flex items-center gap-3 text-gray-700">
+            <FiPhone /> (123) 456-7890
+          </p>
+          <p className="flex items-center gap-3 text-gray-700">
+            <FiMail /> support@yourecommerce.com
+          </p>
+        </div>
+
+        {/* Extra engagement */}
+        <div className="bg-gray-100 p-4 rounded-lg">
+          <p className="font-medium">⏱ Response Time</p>
+          <p className="text-sm text-gray-600">We usually reply within 24 hours.</p>
+        </div>
+      </div>
+
+      {/* RIGHT SIDE - FORM */}
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-xl rounded-lg p-6 space-y-5"
+      >
+
         <div>
-          <label className="block text-gray-700">Name</label>
+          <label className="text-gray-700">Name</label>
           <input
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            type="text"
+            className="w-full mt-1 p-3 border rounded-md focus:ring-2 focus:ring-black transition"
             placeholder="Your name"
           />
         </div>
 
         <div>
-          <label className="block text-gray-700">Email</label>
+          <label className="text-gray-700">Email</label>
           <input
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            type="email"
+            className="w-full mt-1 p-3 border rounded-md focus:ring-2 focus:ring-black transition"
             placeholder="you@example.com"
           />
         </div>
 
         <div>
-          <label className="block text-gray-700">Message</label>
+          <label className="text-gray-700">Message</label>
           <textarea
             name="message"
             value={formData.message}
             onChange={handleChange}
             rows="5"
-            className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Your message"
+            className="w-full mt-1 p-3 border rounded-md focus:ring-2 focus:ring-black transition"
+            placeholder="Your message..."
           />
+          <p className="text-xs text-gray-400 mt-1">
+            {formData.message.length}/200 characters
+          </p>
         </div>
 
-        {formStatus && <p className="text-center text-red-500">{formStatus}</p>}
+        {/* Status Message */}
+        {formStatus && (
+          <p className="text-center text-sm font-medium text-red-500">
+            {formStatus}
+          </p>
+        )}
 
-        <div className="text-center">
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
-          >
-            Send Message
-          </button>
-        </div>
+        {/* Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full py-3 rounded-md text-white transition ${
+            loading ? "bg-gray-400" : "bg-black hover:bg-gray-800"
+          }`}
+        >
+          {loading ? "Sending..." : "Send Message"}
+        </button>
       </form>
-
-      <div className="mt-10 text-center text-gray-600">
-        <p>📍 123 Commerce Street, New York, NY 10001</p>
-        <p>📞 (123) 456-7890</p>
-        <p>📧 support@yourecommerce.com</p>
-      </div>
     </div>
   );
 };

@@ -148,6 +148,7 @@ router.put("/:id", protect, isAdmin, async (req, res) => {
 
         // Send the updated product as the response
         res.status(200).json({ message: "Product updated successfully", product });
+        console.log("Brand Filter:", newFilter.brand);
 
     } catch (error) {
         console.error(error.message);
@@ -207,19 +208,22 @@ router.get("/", async (req, res) => {
         }
         // Material Logic
         if (material) {
-            query.material = { $in: material.split(",") };
+            query.materials = { $in: material.split(",") };
         }
         // brand Logic
         if (brand) {
-            query.brand = { $in: brand.split(",") };
+            const brands = brand.split(",").map(b => b.toLowerCase());
+            query.$expr = {
+                $in: [{ $toLower: "$brand" }, brands]
+            };
         }
         // size Logic
         if (size) {
-            query.size = { $in: size.split(",") };
+            query.sizes = { $in: size.split(",") };
         }
         // color Logic
         if (color) {
-            query.color = { $in: [color] };
+            query.colors = { $in: [color] };
         }
         // gender logic
         if (gender) {

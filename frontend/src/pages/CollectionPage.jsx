@@ -11,7 +11,6 @@ const CollectionPage = () => {
     const [searchParams] = useSearchParams();
     const dispatch = useDispatch();
     const {products,loading,error} =useSelector((state)=>state.products);
-    const queryParams = Object.fromEntries([...searchParams]);
     const sidebarRef = useRef(null);
     const [isSidebarOpen,setIsSidebarOpen] = useState(false);
     //state
@@ -19,8 +18,9 @@ const CollectionPage = () => {
 
     //useEffects
     useEffect(()=>{
+        const queryParams = Object.fromEntries([...searchParams]);
        dispatch(fetchProductsByFilters({collection, ...queryParams})); 
-    },[dispatch,collection,searchParams]);
+    },[dispatch,collection,searchParams.toString()]);
 
     const toggleSidebar = ()=>{
         setIsSidebarOpen(!isSidebarOpen);
