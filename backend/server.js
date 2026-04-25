@@ -16,12 +16,19 @@ const adminRoutes = require("./routes/adminRoutes.js");
 const productAdminRoutes = require("./routes/productAdminRoutes.js");
 const ordersAdminRoutes = require("./routes/ordersAdminRoutes.js");
 const contactRoutes = require("./routes/contactRoutes.js");
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL
+];
+
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://new-ecommerce-website-chi.vercel.app"
-  ],
-  credentials: true
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
 }));
 
 app.use(express.json()); // Enables parsing of JSON request bodies
