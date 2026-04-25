@@ -2,42 +2,100 @@ name: CI/CD Pipeline for MERN App
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
+  build-test-deploy:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        shell: bash
+
     steps:
-      # 1. Checkout code
+      # 1 Checkout
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 2. Setup Node
+      # 2 Setup Node + cache
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
+          cache: "npm"
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
 
-      # 3. Install backend deps
+      # 3 Install backend deps
       - name: Install Backend Dependencies
-        run: |
-          cd backend
-          npm ci
+        working-directory: backend
+        run: npm ci
 
-      # 4. Install frontend deps
+      # 4 Install frontend deps
       - name: Install Frontend Dependencies
-        run: |
-          cd frontend
-          npm ci
+        working-directory: frontend
+        run: npm ci
 
-      # 5. Build frontend
+      # 5 Lint (skip if not configured)
+      - name: Lint Backend
+        working-directory: backend
+        run: npm run lint --if-present
+
+      - name: Lint Frontend
+        working-directory: frontend
+        run: npm run lint --if-present
+
+      # 6 Unit tests (skip if not present)
+      - name: Test Backend
+        working-directory: backend
+        run: npm test --if-present
+
+      - name: Test Frontend
+        working-directory: frontend
+        run: npm test --if-present
+
+      # 7 Build frontend
       - name: Build Frontend
-        run: |
-          cd frontend
-          npm run build
+        working-directory: frontend
+        run: npm run build
 
-      # 6. Success message
+      # 8 Security audit (non-blocking by default)
+      - name: Security Audit (Backend)
+        working-directory: backend
+        run: npm audit --audit-level=high || true
+
+      - name: Security Audit (Frontend)
+        working-directory: frontend
+        run: npm audit --audit-level=high || true
+
+      # 9 Upload build artifact (useful for debugging or later deploy steps)
+      - name: Upload Frontend Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
+
+      # 10) Optional: Backend health check (after deploy)
+      # Only runs on push to main (skip on PRs)
+      - name: Health Check API
+        if: github.event_name == 'push'
+        run: |
+          echo "Checking API health..."
+          curl -f ${{ secrets.BACKEND_HEALTH_URL }} || (echo "API failed" && exit 1)
+
+      # 11 Optional: Trigger Render deploy via Deploy Hook
+      - name: Trigger Render Deploy
+        if: github.event_name == 'push'
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+      # 12 Done
       - name: Done
-        run: echo "Build successful 🚀"
+        run: echo "CI/CD completed successfully 🚀"
