@@ -24,7 +24,8 @@ app.use(express.json()); // Enables parsing of JSON request bodies
 app.use(express.urlencoded({ extended: true })); // Allows form data parsing
 
 
-dotenv.config({ path: './config.env' });
+// dotenv.config({ path: './config.env' });
+dotenv.config();
 // console.log(process.env.PORT);
 
 const PORT=process.env.PORT || 3000;
@@ -51,13 +52,13 @@ app.use("/api/admin/orders",ordersAdminRoutes);
 
 
 // Serve static files from the "uploads" directory
-const _dirname = path.resolve();
-app.use(express.static(path.join(_dirname,"/frontend/dist")));
-app.get("*", (_, res) => {
-    res.sendFile(path.join(_dirname, "frontend", "dist", "index.html"));
-});
+// const _dirname = path.resolve();
+// app.use(express.static(path.join(_dirname,"/frontend/dist")));
+// app.get("*", (_, res) => {
+//     res.sendFile(path.join(_dirname, "frontend", "dist", "index.html"));
+// });
 
 
 app.listen(PORT,()=>{
-    console.log(`server is running on http://localhost ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 })
