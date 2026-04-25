@@ -17,7 +17,11 @@ const productAdminRoutes = require("./routes/productAdminRoutes.js");
 const ordersAdminRoutes = require("./routes/ordersAdminRoutes.js");
 const contactRoutes = require("./routes/contactRoutes.js");
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "*"
+  origin: [
+    "http://localhost:5173",
+    "https://new-ecommerce-website-chi.vercel.app"
+  ],
+  credentials: true
 }));
 
 app.use(express.json()); // Enables parsing of JSON request bodies
