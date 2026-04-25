@@ -10,20 +10,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      # 1. Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
+      # 2. Setup Node
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - run: |
+      # 3. Install backend deps
+      - name: Install Backend Dependencies
+        run: |
           cd backend
-          npm install
+          npm ci
 
-      - run: |
+      # 4. Install frontend deps
+      - name: Install Frontend Dependencies
+        run: |
           cd frontend
-          npm install
+          npm ci
 
-      - run: |
+      # 5. Build frontend
+      - name: Build Frontend
+        run: |
           cd frontend
           npm run build
+
+      # 6. Success message
+      - name: Done
+        run: echo "Build successful 🚀"
