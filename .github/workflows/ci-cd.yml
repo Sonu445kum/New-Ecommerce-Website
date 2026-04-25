@@ -1,67 +1,325 @@
-name: CI/CD Pipeline for MERN App
+# name: CI/CD Pipeline for MERN App
+
+# on:
+#   push:
+#     branches: [main]
+#   pull_request:
+#     branches: [main]
+
+# concurrency:
+#   group: ci-${{ github.ref }}
+#   cancel-in-progress: true
+
+# jobs:
+#   build-test-deploy:
+#     runs-on: ubuntu-latest
+
+#     defaults:
+#       run:
+#         shell: bash
+
+#     strategy:
+#       fail-fast: true
+#       matrix:
+#         node-version: [18]
+
+#     steps:
+#       # 1️ Checkout Code
+#       - name: Checkout Code
+#         uses: actions/checkout@v3
+
+#       # 2️ Setup Node.js with caching
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: ${{ matrix.node-version }}
+#           cache: "npm"
+#           cache-dependency-path: |
+#             backend/package-lock.json
+#             frontend/package-lock.json
+
+#       # 3️ Install Backend Dependencies
+#       - name: Install Backend Dependencies
+#         working-directory: backend
+#         run: |
+#           npm config set prefer-offline true
+#           npm ci
+
+#       # 4️ Install Frontend Dependencies
+#       - name: Install Frontend Dependencies
+#         working-directory: frontend
+#         run: |
+#           npm config set prefer-offline true
+#           npm ci
+
+#       # 5️ Lint (safe)
+#       - name: Lint Backend
+#         working-directory: backend
+#         run: npm run lint --if-present
+
+#       - name: Lint Frontend
+#         working-directory: frontend
+#         run: npm run lint --if-present || true
+
+#       # 6️ Tests (safe)
+#       - name: Test Backend
+#         working-directory: backend
+#         run: npm test --if-present
+
+#       - name: Test Frontend
+#         working-directory: frontend
+#         run: npm test --if-present
+
+#       # 7️ Build Frontend
+#       - name: Build Frontend
+#         working-directory: frontend
+#         run: npm run build
+
+#       # 8️ Security Audit (non-blocking)
+#       - name: Security Audit (Backend)
+#         working-directory: backend
+#         run: npm audit --audit-level=high || true
+
+#       - name: Security Audit (Frontend)
+#         working-directory: frontend
+#         run: npm audit --audit-level=high || true
+
+#       # 9️ Upload Build Artifact
+#       - name: Upload Frontend Build Artifact
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: frontend-dist
+#           path: frontend/dist
+
+#       # 10 Trigger Render Deployment (ONLY on push)
+#       - name: Trigger Render Deploy
+#         if: github.event_name == 'push'
+#         run: |
+#           echo "Triggering Render deployment..."
+#           curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+#       # 1️1️ Wait for deployment
+#       - name: Wait for deployment
+#         if: github.event_name == 'push'
+#         run: |
+#           echo "Waiting for backend to deploy..."
+#           sleep 40
+
+#       # 1️2️ Health Check API
+#       - name: Health Check API
+#         if: github.event_name == 'push'
+#         run: |
+#           echo "Checking API health..."
+#           curl -f ${{ secrets.BACKEND_HEALTH_URL }} || (echo "API failed" && exit 1)
+
+#       # 1️3️ Done
+#       - name: Done
+#         run: echo "CI/CD Pipeline completed successfully 🚀"
+
+
+
+# Now Add the Docker + CI/CD Pipelines Together
+# name: Advanced CI/CD Pipeline (MERN + Docker)
+
+# on:
+#   push:
+#     branches: [main, dev]
+#   pull_request:
+#     branches: [main, dev]
+
+# jobs:
+
+#   # =========================
+#   # 1️ BUILD JOB
+#   # =========================
+#   build:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout Code
+#         uses: actions/checkout@v3
+
+#       - name: Setup Node
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 18
+
+#       - name: Install Backend Dependencies
+#         working-directory: backend
+#         run: npm ci
+
+#       - name: Install Frontend Dependencies
+#         working-directory: frontend
+#         run: npm ci
+
+#       - name: Build Frontend
+#         working-directory: frontend
+#         run: npm run build
+
+#       - name: Upload Build Artifact
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: frontend-build
+#           path: frontend/dist
+
+
+#   # =========================
+#   # 2️ TEST JOB
+#   # =========================
+#   test:
+#     runs-on: ubuntu-latest
+#     needs: build
+
+#     steps:
+#       - name: Checkout Code
+#         uses: actions/checkout@v3
+
+#       - name: Setup Node
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 18
+
+#       - name: Run Backend Tests
+#         working-directory: backend
+#         run: npm test --if-present
+
+#       - name: Run Frontend Tests
+#         working-directory: frontend
+#         run: npm test --if-present
+
+#       - name: Lint Check
+#         run: |
+#           cd frontend && npm run lint --if-present || true
+
+
+#   # =========================
+#   # 3️ DOCKER BUILD & PUSH
+#   # =========================
+#   docker:
+#     runs-on: ubuntu-latest
+#     needs: test
+
+#     steps:
+#       - name: Checkout Code
+#         uses: actions/checkout@v3
+
+#       - name: Login to DockerHub
+#         uses: docker/login-action@v2
+#         with:
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_PASSWORD }}
+
+#       - name: Build Docker Image
+#         run: |
+#           docker build -t ${{ secrets.DOCKER_USERNAME }}/mern-app:latest .
+
+#       - name: Push Docker Image
+#         run: |
+#           docker push ${{ secrets.DOCKER_USERNAME }}/mern-app:latest
+
+
+#   # =========================
+#   # 4️ DEPLOY JOB
+#   # =========================
+#   deploy:
+#     runs-on: ubuntu-latest
+#     needs: docker
+
+#     steps:
+#       - name: Trigger Render Deploy
+#         run: |
+#           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+#             echo "🚀 Deploying to PRODUCTION"
+#             curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+#           else
+#             echo "🚀 Deploying to STAGING"
+#             curl -X POST ${{ secrets.RENDER_STAGING_DEPLOY_HOOK }}
+#           fi
+
+#       - name: Wait for deployment
+#         run: sleep 40
+
+#       - name: Health Check
+#         run: |
+#           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+#             URL=${{ secrets.PROD_BACKEND_URL }}
+#           else
+#             URL=${{ secrets.STAGING_BACKEND_URL }}
+#           fi
+
+#           echo "Checking API: $URL"
+
+#           for i in {1..5}; do
+#             if curl -f $URL; then
+#               echo "✅ API is healthy"
+#               exit 0
+#             fi
+#             echo "Retrying..."
+#             sleep 10
+#           done
+
+#           echo "❌ API failed"
+#           exit 1
+
+
+# Productions Ready
+
+name: Advanced CI/CD Pipeline (MERN + Docker)
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   pull_request:
-    branches: [main]
-
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+    branches: [main, dev]
 
 jobs:
-  build-test-deploy:
-    runs-on: ubuntu-latest
 
+  build:
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
 
-    strategy:
-      fail-fast: true
-      matrix:
-        node-version: [18]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Backend
+        working-directory: backend
+        run: npm ci
+
+      - name: Install Frontend
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build Frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Upload Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend/dist
+
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    defaults:
+      run:
+        shell: bash
 
     steps:
-      # 1️ Checkout Code
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      # 2️ Setup Node.js with caching
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
-          cache-dependency-path: |
-            backend/package-lock.json
-            frontend/package-lock.json
+          node-version: 18
 
-      # 3️ Install Backend Dependencies
-      - name: Install Backend Dependencies
-        working-directory: backend
-        run: |
-          npm config set prefer-offline true
-          npm ci
-
-      # 4️ Install Frontend Dependencies
-      - name: Install Frontend Dependencies
-        working-directory: frontend
-        run: |
-          npm config set prefer-offline true
-          npm ci
-
-      # 5️ Lint (safe)
-      - name: Lint Backend
-        working-directory: backend
-        run: npm run lint --if-present
-
-      - name: Lint Frontend
-        working-directory: frontend
-        run: npm run lint --if-present || true
-
-      # 6️ Tests (safe)
       - name: Test Backend
         working-directory: backend
         run: npm test --if-present
@@ -70,48 +328,70 @@ jobs:
         working-directory: frontend
         run: npm test --if-present
 
-      # 7️ Build Frontend
-      - name: Build Frontend
+      - name: Lint
         working-directory: frontend
-        run: npm run build
+        run: npm run lint --if-present || true
 
-      # 8️ Security Audit (non-blocking)
-      - name: Security Audit (Backend)
-        working-directory: backend
-        run: npm audit --audit-level=high || true
 
-      - name: Security Audit (Frontend)
-        working-directory: frontend
-        run: npm audit --audit-level=high || true
+  docker:
+    runs-on: ubuntu-latest
+    needs: test
 
-      # 9️ Upload Build Artifact
-      - name: Upload Frontend Build Artifact
-        uses: actions/upload-artifact@v4
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login Docker
+        uses: docker/login-action@v2
         with:
-          name: frontend-dist
-          path: frontend/dist
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 10 Trigger Render Deployment (ONLY on push)
-      - name: Trigger Render Deploy
-        if: github.event_name == 'push'
+      - name: Build Image
         run: |
-          echo "Triggering Render deployment..."
-          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/mern-app:${{ github.sha }} .
 
-      # 1️1️ Wait for deployment
-      - name: Wait for deployment
-        if: github.event_name == 'push'
+      - name: Push Image
         run: |
-          echo "Waiting for backend to deploy..."
-          sleep 40
+          docker push ${{ secrets.DOCKER_USERNAME }}/mern-app:${{ github.sha }}
 
-      # 1️2️ Health Check API
-      - name: Health Check API
-        if: github.event_name == 'push'
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker
+    if: github.event_name == 'push'
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Trigger Deploy
         run: |
-          echo "Checking API health..."
-          curl -f ${{ secrets.BACKEND_HEALTH_URL }} || (echo "API failed" && exit 1)
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "🚀 Production Deploy"
+            curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+          else
+            echo "🧪 Staging Deploy"
+            curl -X POST ${{ secrets.RENDER_STAGING_DEPLOY_HOOK }}
+          fi
 
-      # 1️3️ Done
-      - name: Done
-        run: echo "CI/CD Pipeline completed successfully 🚀"
+      - name: Wait
+        run: sleep 40
+
+      - name: Health Check
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            URL=${{ secrets.PROD_BACKEND_URL }}
+          else
+            URL=${{ secrets.STAGING_BACKEND_URL }}
+          fi
+
+          for i in {1..5}; do
+            if curl -f $URL; then
+              echo "✅ API OK"
+              exit 0
+            fi
+            sleep 10
+          done
+
+          echo "❌ API Failed"
+          exit 1
