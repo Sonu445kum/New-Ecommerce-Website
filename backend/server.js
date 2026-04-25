@@ -18,7 +18,8 @@ const ordersAdminRoutes = require("./routes/ordersAdminRoutes.js");
 const contactRoutes = require("./routes/contactRoutes.js");
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://new-ecommerce-website-chi.vercel.app"
+  "https://new-ecommerce-website-chi.vercel.app",
+  "https://new-ecommerce-website-git-main-sonu445kums-projects.vercel.app"
 ];
 
 app.use(cors({
