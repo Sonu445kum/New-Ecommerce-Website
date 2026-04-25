@@ -16,7 +16,9 @@ const adminRoutes = require("./routes/adminRoutes.js");
 const productAdminRoutes = require("./routes/productAdminRoutes.js");
 const ordersAdminRoutes = require("./routes/ordersAdminRoutes.js");
 const contactRoutes = require("./routes/contactRoutes.js");
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "*"
+}));
 
 app.use(express.json()); // Enables parsing of JSON request bodies
 app.use(express.urlencoded({ extended: true })); // Allows form data parsing
